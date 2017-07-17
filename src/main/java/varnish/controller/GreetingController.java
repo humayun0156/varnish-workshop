@@ -36,6 +36,11 @@ public class GreetingController {
         return "index";
     }
 
+    @RequestMapping("/plain")
+    public String plain(Model model) {
+        return "partial/plain";
+    }
+
 
     @RequestMapping("/gallery")
     public String gallery(Model model) {
