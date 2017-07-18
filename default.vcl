@@ -5,31 +5,8 @@ backend default {
 }
 ###########################################################
 sub vcl_recv {
-    if (req.restarts == 0) {
-        if (req.http.x-forwarded-for) {
-            set req.http.X-Forwarded-For =
-            req.http.X-Forwarded-For + ", " + client.ip;
-        } else {
-            set req.http.X-Forwarded-For = client.ip;
-        }
-    }
-    if (req.request != "GET" &&
-      req.request != "HEAD" &&
-      req.request != "PUT" &&
-      req.request != "POST" &&
-      req.request != "TRACE" &&
-      req.request != "OPTIONS" &&
-      req.request != "DELETE") {
-        /* Non-RFC2616 or CONNECT which is weird. */
-        return (pipe);
-    }
-    if (req.request != "GET" && req.request != "HEAD") {
-        /* We only deal with GET and HEAD by default */
-        return (pass);
-    }
-    if (req.http.Authorization || req.http.Cookie) {
-        /* Not cacheable by default */
-        return (pass);
+    if (req.request == "GET") {
+        return (lookup);
     }
     return (lookup);
 }
@@ -76,10 +53,19 @@ sub vcl_fetch {
 		set beresp.ttl = 120 s;
 		return (hit_for_pass);
     }
+    if (req.request == "GET") {
+        set beresp.http.Cache-Control = "max-age=30";
+        set beresp.ttl =  30s;
+    }
     return (deliver);
 }
 ###########################################################
 sub vcl_deliver {
+    if (obj.hits > 0) {
+      set resp.http.X-Varnish-Cache = "HIT";
+    } else {
+      set resp.http.X-Varnish-Cache = "MISS";
+    }
     return (deliver);
 }
 ###########################################################
