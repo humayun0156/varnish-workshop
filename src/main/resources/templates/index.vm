@@ -12,13 +12,13 @@
   <title>$!title - Start Bootstrap Template</title>
 
   <!-- Bootstrap Core CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom CSS -->
-  <link href="css/modern-business.css" rel="stylesheet">
+  <link href="/css/modern-business.css" rel="stylesheet">
 
   <!-- Custom Fonts -->
-  <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -88,6 +88,8 @@
         <a href="/services" class="list-group-item">Services</a>
         <a href="/contact" class="list-group-item">Contact</a>
         <a href="/gallery" class="list-group-item">Gallery</a>
+        <a href="/product/mi" class="list-group-item">Product</a>
+        <a href="/plain" class="list-group-item">Plain</a>
 
       </div>
     </div>
@@ -113,6 +115,8 @@
         #elseif($page && $page == "gallery")
           #parse("gallery/gallery.vm")
 
+        #elseif($page && $page == "product")
+          <h1>$url</h1>
         #end
 
 
@@ -135,11 +139,11 @@
 <!-- /.container -->
 
 <!-- jQuery -->
-<script src="js/jquery.js"></script>
+<script src="/js/jquery.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
-<script src="js/custom.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/custom.js"></script>
 
 </body>
 

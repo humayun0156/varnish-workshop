@@ -2,8 +2,11 @@ package varnish.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class GreetingController {
@@ -39,6 +42,24 @@ public class GreetingController {
     @RequestMapping("/plain")
     public String plain(Model model) {
         return "partial/plain";
+    }
+
+    @RequestMapping("/product/{productName}/*")
+    public String product(@PathVariable("productName") String productName,
+                          HttpServletRequest request, Model model) {
+        model.addAttribute("url", request.getRequestURI());
+        model.addAttribute("title", "Product");
+        model.addAttribute("page", "product");
+        return "index";
+    }
+
+    @RequestMapping("/product/{productName}/**")
+    public String product_1(@PathVariable("productName") String productName,
+                          HttpServletRequest request, Model model) {
+        model.addAttribute("url", request.getRequestURI());
+        model.addAttribute("title", "Product");
+        model.addAttribute("page", "product");
+        return "index";
     }
 
 
