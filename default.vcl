@@ -27,10 +27,11 @@ sub vcl_recv {
         /* We only deal with GET and HEAD by default */
         return (pass);
     }
-    if (req.http.Authorization || req.http.Cookie) {
-        /* Not cacheable by default */
-        return (pass);
+
+    if (req.request == "GET") {
+        return (lookup);
     }
+
     return (lookup);
 }
 ###########################################################
@@ -76,10 +77,21 @@ sub vcl_fetch {
 		set beresp.ttl = 120 s;
 		return (hit_for_pass);
     }
+    if (req.request == "GET") {
+        set beresp.http.Cache-Control = "max-age=30";
+        set beresp.ttl =  30s;
+    }
+    set beresp.http.X-Cacheable = "YES";
     return (deliver);
 }
 ###########################################################
 sub vcl_deliver {
+
+    if (obj.hits > 0) {
+      set resp.http.X-Varnish-Cache = "HIT";
+    } else {
+      set resp.http.X-Varnish-Cache = "MISS";
+    }
     return (deliver);
 }
 ###########################################################
