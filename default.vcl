@@ -1,10 +1,14 @@
 
+import std;
+
 backend default {
     .host = "127.0.0.1";
     .port = "8080";
 }
 ###########################################################
 sub vcl_recv {
+    std.syslog(9, "In vcl_recv");
+
     if (req.restarts == 0) {
         if (req.http.x-forwarded-for) {
             set req.http.X-Forwarded-For =
@@ -60,32 +64,38 @@ sub vcl_hash {
 }
 ###########################################################
 sub vcl_hit {
+    std.syslog(9, "In vcl_hit");
     return (deliver);
 }
 ###########################################################
 sub vcl_miss {
+    std.syslog(9, "In vcl_miss");
     return (fetch);
 }
 ###########################################################
 sub vcl_fetch {
+    std.syslog(9, "In vcl_fetch");
     if (beresp.ttl <= 0s ||
         beresp.http.Set-Cookie ||
         beresp.http.Vary == "*") {
-		/*
-		 * Mark as "Hit-For-Pass" for the next 2 minutes
-		 */
-		set beresp.ttl = 120 s;
-		return (hit_for_pass);
+      /*
+       * Mark as "Hit-For-Pass" for the next 2 minutes
+       */
+      set beresp.ttl = 120 s;
+      return (hit_for_pass);
     }
+
     if (req.request == "GET") {
         set beresp.http.Cache-Control = "max-age=30";
         set beresp.ttl =  30s;
     }
+
     set beresp.http.X-Cacheable = "YES";
     return (deliver);
 }
 ###########################################################
 sub vcl_deliver {
+    std.syslog(9, "In vcl_deliver");
 
     if (obj.hits > 0) {
       set resp.http.X-Varnish-Cache = "HIT";
@@ -96,6 +106,8 @@ sub vcl_deliver {
 }
 ###########################################################
 sub vcl_error {
+    std.syslog(9, "In vcl_error");
+
     set obj.http.Content-Type = "text/html; charset=utf-8";
     set obj.http.Retry-After = "5";
     synthetic {"
