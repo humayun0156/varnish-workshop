@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import varnish.model.UserPass;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -24,6 +25,10 @@ public class LoginController {
     public void submit(@ModelAttribute UserPass userPass, HttpServletResponse response, Model model) {
         System.out.println("User: " + userPass.getUserName());
         System.out.println("Pass: " + userPass.getPassword());
+        Cookie ck = new Cookie("user", userPass.getUserName());
+        ck.setMaxAge(3600);
+        ck.setPath("/");
+        response.addCookie(ck);
         model.addAttribute("page", "index");
 
         try {

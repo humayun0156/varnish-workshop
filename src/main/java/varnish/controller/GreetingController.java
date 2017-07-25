@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class GreetingController {
@@ -33,9 +34,10 @@ public class GreetingController {
     }
 
     @RequestMapping("/contact")
-    public String contact(Model model) {
+    public String contact(Model model, HttpServletResponse response) {
         model.addAttribute("title", "Contact");
         model.addAttribute("page", "contact");
+        response.addHeader("Cache-Control", "max-age=600");
         return "index";
     }
 

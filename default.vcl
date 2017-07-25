@@ -3,6 +3,12 @@ backend default {
     .host = "127.0.0.1";
     .port = "8080";
 }
+
+/* comment */
+# comment
+/*
+ * comment
+ */
 ###########################################################
 sub vcl_recv {
     if (req.restarts == 0) {
@@ -27,10 +33,9 @@ sub vcl_recv {
         /* We only deal with GET and HEAD by default */
         return (pass);
     }
-    if (req.http.Authorization || req.http.Cookie) {
-        /* Not cacheable by default */
-        return (pass);
-    }
+
+
+
     return (lookup);
 }
 ###########################################################
@@ -73,9 +78,10 @@ sub vcl_fetch {
 		/*
 		 * Mark as "Hit-For-Pass" for the next 2 minutes
 		 */
-		set beresp.ttl = 120 s;
-		return (hit_for_pass);
+      set beresp.ttl = 120 s;
+      return (hit_for_pass);
     }
+
     return (deliver);
 }
 ###########################################################
